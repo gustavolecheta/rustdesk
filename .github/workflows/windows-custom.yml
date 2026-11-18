@@ -1,0 +1,24 @@
+name: Build Windows Custom MTM
+on:
+  workflow_dispatch:
+
+jobs:
+  build-windows:
+    runs-on: windows-2022
+    env:
+      RENDEZVOUS_SERVER: ${{ secrets.RENDEZVOUS_SERVER }}
+      RS_PUB_KEY: ${{ secrets.RS_PUB_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+      - name: Build RustDesk Windows
+        run: |
+          python build.py --flutter --hwcodec
+      - name: Upload Executavel MTM
+        uses: actions/upload-artifact@v4
+        with:
+          name: Suporte-MTM-Windows-x64
+          path: flutter/build/windows/x64/runner/Release/*
